@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Quản lý Camera</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial;
+}
+
+body{
+display:flex;
+height:100vh;
+background:#334155;
+color:#fff;
+}
+
+.sidebar{
+width:250px;
+background:#1e293b;
+color:#fff;
+padding:20px;
+display:flex;
+flex-direction:column;
+justify-content:space-between;
+}
+
+.logo{
+font-weight:bold;
+margin-bottom:20px;
+}
+
+.menu h4{
+margin:15px 0 10px;
+font-size:12px;
+color:#94a3b8;
+}
+
+.menu a{
+display:block;
+padding:10px;
+border-radius:8px;
+color:#cbd5f5;
+text-decoration:none;
+margin-bottom:5px;
+}
+
+.menu a:hover{
+background:#334155;
+}
+
+.menu a.active{
+background:#10b981;
+color:#fff;
+}
+
+.user{
+font-size:14px;
+}
+
+.main{
+flex:1;
+padding:30px;
+}
+
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.header h1{
+font-size:26px;
+}
+
+.header p{
+color:#cbd5f5;
+margin-top:6px;
+}
+
+.btn-add{
+background:#10b981;
+padding:12px 18px;
+border:none;
+border-radius:12px;
+color:#fff;
+cursor:pointer;
+font-weight:500;
+}
+
+/* CONTAINER FLEX (THÊM MỚI) */
+#cameraList{
+display:flex;
+gap:25px;
+flex-wrap:wrap;
+margin-top:25px;
+}
+
+/* CARD */
+.camera-card{
+width:400px;
+background:#e2e8f0;
+color:#1e293b;
+border-radius:18px;
+padding:20px;
+box-shadow:0 10px 20px rgba(0,0,0,.2);
+}
+
+.card-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.card-header h3{
+font-size:18px;
+}
+
+.sub{
+color:#64748b;
+font-size:14px;
+margin-top:4px;
+}
+
+.status{
+background:#d1fae5;
+color:#059669;
+padding:6px 12px;
+border-radius:20px;
+font-size:12px;
+}
+
+.url{
+margin:15px 0;
+padding:12px;
+background:#cbd5e1;
+border-radius:10px;
+font-size:14px;
+}
+
+.actions{
+display:flex;
+gap:10px;
+}
+
+.btn{
+flex:1;
+padding:10px;
+border-radius:10px;
+border:none;
+cursor:pointer;
+font-weight:500;
+}
+
+.btn-edit{
+background:#e2e8f0;
+border:1px solid #94a3b8;
+}
+
+.btn-disable{
+background:#ef4444;
+color:white;
+}
+</style>
+</head>
+
+<!-- MODAL -->
+<div id="cameraModal" style="
+position:fixed;
+top:0;left:0;
+width:100%;height:100%;
+background:rgba(0,0,0,0.5);
+display:none;
+justify-content:center;
+align-items:center;
+">
+
+<div style="background:#fff;width:450px;border-radius:14px;padding:25px;color:#000;">
+
+<div style="display:flex;justify-content:space-between;margin-bottom:15px;">
+<h2>Thêm Camera mới</h2>
+<span onclick="closeCameraModal()" style="cursor:pointer">×</span>
+</div>
+
+<div style="margin-bottom:10px;">
+<label>Tên Camera</label>
+<input id="camName" style="width:100%;padding:10px;">
+</div>
+
+<div style="margin-bottom:10px;">
+<label>Vị trí</label>
+<input id="camLocation" style="width:100%;padding:10px;">
+</div>
+
+<div style="margin-bottom:10px;">
+<label>URL kết nối</label>
+<input id="camUrl" style="width:100%;padding:10px;">
+</div>
+
+<button onclick="addCamera()" style="width:100%;padding:12px;background:#10b981;color:#fff;border:none;border-radius:8px;">
+Thêm Camera
+</button>
+
+</div>
+</div>
+<!-- modal edit -->
+<div id="editModal" style="
+position:fixed;
+top:0;left:0;
+width:100%;height:100%;
+background:rgba(0,0,0,0.5);
+display:none;
+justify-content:center;
+align-items:center;
+">
+
+<div style="background:#fff;width:450px;border-radius:14px;padding:25px;color:#000;">
+
+<div style="display:flex;justify-content:space-between;margin-bottom:15px;">
+<h2>Sửa cấu hình Camera</h2>
+<span onclick="closeEditModal()" style="cursor:pointer">×</span>
+</div>
+
+<div style="margin-bottom:10px;">
+<label>Tên Camera</label>
+<input id="editName" style="width:100%;padding:10px;">
+</div>
+
+<div style="margin-bottom:10px;">
+<label>Vị trí</label>
+<input id="editLocation" style="width:100%;padding:10px;">
+</div>
+
+<div style="margin-bottom:10px;">
+<label>URL kết nối</label>
+<input id="editUrl" style="width:100%;padding:10px;">
+</div>
+
+<button onclick="updateCamera()" style="
+width:100%;
+padding:12px;
+background:#10b981;
+color:#fff;
+border:none;
+border-radius:8px;">
+Cập nhật
+</button>
+
+</div>
+</div>
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div>
+    <div class="logo">📷 BAE Smart Camera</div>
+
+    <div class="menu">
+      <h4>QUẢN TRỊ</h4>
+      <a href="users.html">Quản lý tài khoản</a>
+      <a href="camera.html" class="active">Quản lý camera</a>
+      <a href="report.html">Báo cáo và thống kê</a>
+
+      <h4>GIÁM SÁT</h4>
+      <a href="live.html">Giám sát trực tiếp</a>
+      <a href="events.html">Đánh giá sự kiện</a>
+      <a href="alerts.html">Quản lý cảnh báo</a>
+      <a href="videos.html">Quản lý lịch sử video</a>
+    </div>
+  </div>
+
+  <div class="user">
+    👤 Admin User<br>
+    <small>Quản trị viên</small>
+  </div>
+</div>
+
+
+<div class="main">
+
+<div class="header">
+<div>
+<h1>Quản lý Camera</h1>
+<p>Thêm mới, sửa cấu hình và vô hiệu hóa camera</p>
+</div>
+
+<button class="btn-add">+ Thêm Camera</button>
+</div>
+
+<!-- DANH SÁCH CAMERA -->
+<div id="cameraList">
+
+<div class="camera-card">
+<div class="card-header">
+<div>
+<h3>Camera 1</h3>
+<div class="sub">Cổng 1</div>
+</div>
+<div class="status">📶 Online</div>
+</div>
+
+<div class="url">
+rtsp://camera.local/stream1
+</div>
+
+<div class="actions">
+<button class="btn btn-edit">✏️ Sửa cấu hình</button>
+<button class="btn btn-disable">Vô hiệu hóa</button>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</body>
+
+<script>
+
+// mở modal
+document.querySelector(".btn-add").onclick = () => {
+document.getElementById("cameraModal").style.display = "flex";
+};
+
+// đóng modal
+function closeCameraModal(){
+document.getElementById("cameraModal").style.display = "none";
+}
+
+// click ngoài đóng
+window.onclick = function(e){
+let modal = document.getElementById("cameraModal");
+if(e.target === modal){
+modal.style.display = "none";
+}
+}
+
+// thêm camera
+function addCamera(){
+
+let name = camName.value;
+let location = camLocation.value;
+let url = camUrl.value;
+
+if(!name || !location || !url){
+alert("Nhập đầy đủ thông tin");
+return;
+}
+
+let card = document.createElement("div");
+card.className = "camera-card";
+
+card.innerHTML = `
+<div class="card-header">
+<div>
+<h3>${name}</h3>
+<div class="sub">${location}</div>
+</div>
+<div class="status">📶 Online</div>
+</div>
+
+<div class="url">${url}</div>
+
+<div class="actions">
+<button class="btn btn-edit">✏️ Sửa cấu hình</button>
+<button class="btn btn-disable">Vô hiệu hóa</button>
+</div>
+`;
+
+document.getElementById("cameraList").appendChild(card);
+
+// reset
+camName.value="";
+camLocation.value="";
+camUrl.value="";
+
+closeCameraModal();
+}
+let currentCard = null;
+
+/* ===== MỞ FORM SỬA ===== */
+document.addEventListener("click", function(e){
+
+  // SỬA CAMERA
+  if(e.target.classList.contains("btn-edit")){
+    currentCard = e.target.closest(".camera-card");
+
+    const name = currentCard.querySelector("h3").innerText;
+    const location = currentCard.querySelector(".sub").innerText;
+    const url = currentCard.querySelector(".url").innerText;
+
+    editName.value = name;
+    editLocation.value = location;
+    editUrl.value = url;
+
+    document.getElementById("editModal").style.display = "flex";
+  }
+
+});
+
+/* ===== ĐÓNG MODAL ===== */
+function closeEditModal(){
+  document.getElementById("editModal").style.display = "none";
+}
+
+/* ===== CẬP NHẬT CAMERA ===== */
+function updateCamera(){
+
+  let name = editName.value;
+  let location = editLocation.value;
+  let url = editUrl.value;
+
+  if(!name || !location || !url){
+    alert("Nhập đầy đủ thông tin");
+    return;
+  }
+
+  currentCard.querySelector("h3").innerText = name;
+  currentCard.querySelector(".sub").innerText = location;
+  currentCard.querySelector(".url").innerText = url;
+
+  closeEditModal();
+}
+
+/* ===== VÔ HIỆU HÓA ===== */
+document.addEventListener("click", function(e){
+
+  if(e.target.classList.contains("btn-disable")){
+    const btn = e.target;
+    const card = btn.closest(".camera-card");
+    const status = card.querySelector(".status");
+
+    if(btn.innerText === "Vô hiệu hóa"){
+      btn.innerText = "Kích hoạt";
+      btn.style.background = "#16a34a";
+
+      status.innerText = "⛔ Vô hiệu hóa";
+      status.style.background = "#fee2e2";
+      status.style.color = "red";
+
+    }else{
+      btn.innerText = "Vô hiệu hóa";
+      btn.style.background = "#ef4444";
+
+      status.innerText = "📶 Online";
+      status.style.background = "#d1fae5";
+      status.style.color = "#059669";
+    }
+  }
+
+});
+
+</script>
+
+</html>

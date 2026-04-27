@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Tổng quan</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial;
+}
+
+body{
+display:flex;
+background:#334155;
+height:100vh;
+}
+
+/* SIDEBAR */
+.sidebar{
+width:260px;
+background:#1e293b;
+color:#fff;
+padding:20px;
+display:flex;
+flex-direction:column;
+justify-content:space-between;
+}
+
+.logo{
+font-weight:bold;
+font-size:18px;
+margin-bottom:30px;
+}
+
+.menu h4{
+font-size:12px;
+color:#94a3b8;
+margin-bottom:10px;
+}
+
+.menu a{
+display:flex;
+align-items:center;
+gap:10px;
+padding:10px;
+border-radius:8px;
+color:#cbd5f5;
+text-decoration:none;
+margin-bottom:8px;
+}
+
+.menu a:hover{
+background:#334155;
+}
+
+.user{
+display:flex;
+gap:10px;
+align-items:center;
+}
+
+.avatar{
+width:40px;
+height:40px;
+background:#10b981;
+border-radius:50%;
+}
+
+/* MAIN */
+.main{
+flex:1;
+padding:25px;
+}
+
+/* HEADER */
+.title{
+font-size:28px;
+color:#fff;
+margin-bottom:5px;
+}
+
+.sub{
+color:#cbd5f5;
+margin-bottom:20px;
+}
+
+/* CARDS */
+.cards{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:20px;
+margin-bottom:20px;
+}
+
+.card{
+background:#e5e7eb;
+padding:20px;
+border-radius:14px;
+}
+
+.card-title{
+color:#64748b;
+margin-bottom:10px;
+}
+
+.card-value{
+font-size:30px;
+font-weight:bold;
+}
+
+/* CONTENT */
+.content{
+display:grid;
+grid-template-columns:2fr 1fr;
+gap:20px;
+}
+
+/* BOX */
+.box{
+background:#e5e7eb;
+border-radius:14px;
+padding:20px;
+}
+
+/* STATUS LIST */
+.status-item{
+background:#d1d5db;
+padding:12px;
+border-radius:10px;
+margin-bottom:12px;
+display:flex;
+justify-content:space-between;
+}
+
+.green{color:green;font-weight:bold;}
+.red{color:red;font-weight:bold;}
+.orange{color:orange;font-weight:bold;}
+
+canvas{
+max-width:350px;
+margin:auto;
+display:block;
+}
+</style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+<div>
+<div class="logo">📷 BAE Smart Camera</div>
+
+<div class="menu">
+
+<h4>GIÁM SÁT</h4>
+<a href="live.html" class="active">Giám sát trực tiếp</a>
+<a href="events.html">Đánh giá sự kiện</a>
+<a href="alerts.html">Quản lý cảnh báo</a>
+<a href="videos.html" >Quản lý lịch sử video</a>
+</div>
+</div>
+
+<div class="user">
+<div class="avatar"></div>
+<div>
+👤Monitoring Staff<br>
+<small>Nhân viên giám sát</small>
+</div>
+</div>
+
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+<div class="title">Tổng quan</div>
+<div class="sub">Chào mừng trở lại, Monitoring Staff</div>
+
+<!-- TOP CARDS -->
+<div class="cards">
+
+<div class="card">
+<div class="card-title">Tổng số Camera</div>
+<div class="card-value">7</div>
+</div>
+
+<div class="card">
+<div class="card-title">Camera hoạt động</div>
+<div class="card-value">5</div>
+</div>
+
+<div class="card">
+<div class="card-title">Cảnh báo</div>
+<div class="card-value">2</div>
+</div>
+
+<div class="card">
+<div class="card-title">Tổng sự kiện</div>
+<div class="card-value">2</div>
+</div>
+
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+<!-- CHART -->
+<div class="box">
+<h3>Trạng thái Camera</h3>
+<canvas id="chart"></canvas>
+</div>
+
+<!-- SYSTEM -->
+<div class="box">
+<h3>Tổng quan hệ thống</h3>
+
+<div class="status-item">
+<span>Tổng số Camera</span>
+<span>7</span>
+</div>
+
+<div class="status-item">
+<span>Đang hoạt động</span>
+<span class="green">5</span>
+</div>
+
+<div class="status-item">
+<span>Ngoại tuyến</span>
+<span class="red">2</span>
+</div>
+
+<div class="status-item">
+<span>Cảnh báo đang hoạt động</span>
+<span class="orange">2</span>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+new Chart(document.getElementById("chart"), {
+type: 'pie',
+data: {
+labels: ['Hoạt động', 'Không hoạt động'],
+datasets: [{
+data: [5,2],
+backgroundColor: ['green','red']
+}]
+}
+});
+</script>
+
+</body>
+</html>

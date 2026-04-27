@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Quản lý cảnh báo</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial;
+}
+
+body{
+display:flex;
+height:100vh;
+background:#334155;
+}
+
+/* SIDEBAR */
+.sidebar{
+width:250px;
+background:#1e293b;
+color:#fff;
+padding:20px;
+display:flex;
+flex-direction:column;
+justify-content:space-between;
+}
+
+.logo{
+font-weight:bold;
+margin-bottom:20px;
+}
+
+.menu h4{
+margin:15px 0 10px;
+font-size:12px;
+color:#94a3b8;
+}
+
+.menu a{
+display:block;
+padding:10px;
+border-radius:8px;
+color:#cbd5f5;
+text-decoration:none;
+margin-bottom:5px;
+}
+
+.menu a:hover{
+background:#334155;
+}
+
+.menu a.active{
+background:#10b981;
+color:#fff;
+}
+
+.user{
+font-size:14px;
+}
+
+/* MAIN */
+.main{
+flex:1;
+padding:20px;
+}
+
+/* HEADER */
+.header{
+display:flex;
+justify-content:space-between;
+align-items:flex-start;
+margin-bottom:22px;
+}
+
+.header h1{
+font-size:26px;
+color:#fff;
+margin-bottom:6px;
+}
+
+.header p{
+font-size:15px;
+color:#cbd5f5;
+}
+
+.filter{
+padding:8px 14px;
+border:none;
+border-radius:8px;
+font-size:14px;
+}
+
+/* ALERT CARD */
+.alert-card{
+background:#e5e7eb;
+border-radius:14px;
+padding:24px;
+display:flex;
+justify-content:space-between;
+margin-bottom:18px;
+box-shadow:0 4px 10px rgba(0,0,0,.12);
+}
+
+.alert-left{
+max-width:70%;
+}
+
+.top-tags{
+display:flex;
+gap:10px;
+align-items:center;
+margin-bottom:14px;
+}
+
+.badge{
+padding:7px 12px;
+border-radius:16px;
+font-size:13px;
+font-weight:bold;
+}
+
+.new{
+background:#ffdede;
+color:#dc2626;
+}
+
+.confirmed{
+background:#fff2c9;
+color:#d97706;
+}
+
+.level-high{
+color:#dc2626;
+font-weight:bold;
+font-size:14px;
+}
+
+.level-medium{
+color:#d97706;
+font-weight:bold;
+font-size:14px;
+}
+
+.alert-title{
+font-size:24px;
+font-weight:bold;
+color:#111827;
+margin-bottom:10px;
+}
+
+.alert-desc{
+font-size:15px;
+color:#475569;
+margin-bottom:16px;
+}
+
+.time{
+font-size:13px;
+color:#64748b;
+margin-bottom:6px;
+}
+
+.alert-actions{
+display:flex;
+flex-direction:column;
+align-items:flex-end;
+gap:10px;
+min-width:170px;
+}
+
+.action-btn{
+width:135px;
+padding:10px;
+background:#f8fafc;
+border:1px solid #cbd5e1;
+border-radius:8px;
+font-size:14px;
+cursor:pointer;
+}
+
+.note{
+font-size:13px;
+color:#64748b;
+}
+
+/* MODAL */
+.overlay{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.4);
+display:none;
+justify-content:center;
+align-items:center;
+}
+
+.modal{
+width:900px;
+background:#f1f5f9;
+border-radius:18px;
+padding:20px;
+}
+
+.modal-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:15px;
+}
+
+.modal-title{
+font-size:22px;
+font-weight:bold;
+}
+
+.close{
+cursor:pointer;
+font-size:22px;
+}
+
+.video-box{
+margin-top:20px;
+background:#0f172a;
+border-radius:16px;
+height:300px;
+display:flex;
+justify-content:center;
+align-items:center;
+color:#94a3b8;
+}
+
+.modal-footer{
+margin-top:20px;
+}
+
+.btn-close{
+width:100%;
+padding:12px;
+background:#334155;
+color:#fff;
+border:none;
+border-radius:10px;
+cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<!-- MODAL VIDEO -->
+<div id="videoModal" class="overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Xem video</div>
+      <div class="close" onclick="closeVideo()">✕</div>
+    </div>
+
+    <div class="video-box">
+      ▶ Video minh họa
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-close" onclick="closeVideo()">Đóng</button>
+    </div>
+  </div>
+</div>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+<div>
+<div class="logo">📷 BAE Smart Camera</div>
+
+<div class="menu">
+<h4>QUẢN TRỊ</h4>
+<a href="users.html">Quản lý tài khoản</a>
+<a href="camera.html">Quản lý camera</a>
+<a href="report.html">Báo cáo và thống kê</a>
+
+<h4>GIÁM SÁT</h4>
+<a href="live.html">Giám sát trực tiếp</a>
+<a href="events.html">Đánh giá sự kiện</a>
+<a href="alerts.html" class="active">Quản lý cảnh báo</a>
+<a href="videos.html">Quản lý lịch sử video</a>
+</div>
+</div>
+
+<div class="user">
+👤 Admin User<br>
+<small>Quản trị viên</small>
+</div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+<div class="header">
+<div>
+<h1>Quản lý cảnh báo</h1>
+<p>Thông báo và cảnh báo hệ thống</p>
+</div>
+
+<select class="filter">
+<option>Tất cả</option>
+<option>Mới</option>
+<option>Đã xác nhận</option>
+</select>
+</div>
+
+<div class="alert-card">
+<div class="alert-left">
+<div class="top-tags">
+<span class="badge new">❗ Mới</span>
+<span class="level-high">CAO</span>
+</div>
+<div class="alert-title">Xâm nhập khu vực</div>
+<div class="alert-desc">Phát hiện người xâm nhập vào khu vực cấm từ camera Cam 01</div>
+<div class="time">Tạo lúc: 10:50:06 26/3/2026</div>
+</div>
+
+<div class="alert-actions">
+<button class="action-btn video-btn">▶ Xem video</button>
+<button class="action-btn confirm-btn">Xác nhận</button>
+<div class="note">Đánh dấu đã xử lý</div>
+</div>
+</div>
+
+<div class="alert-card">
+<div class="alert-left">
+<div class="top-tags">
+<span class="badge confirmed">🕒 Đã xác nhận</span>
+<span class="level-high">CAO</span>
+</div>
+<div class="alert-title">Té ngã người</div>
+<div class="alert-desc">Phát hiện có người té ngã tại khu vực camera Cam 02</div>
+<div class="time">Tạo lúc: 10:48:06 26/3/2026</div>
+<div class="time">Xác nhận lúc: 10:49:06 26/3/2026</div>
+</div>
+
+<div class="alert-actions">
+<button class="action-btn video-btn">▶ Xem video</button>
+<button class="action-btn resolve-btn">Giải quyết</button>
+<div class="note">Đánh dấu đã xử lý</div>
+</div>
+</div>
+
+<div class="alert-card">
+<div class="alert-left">
+<div class="top-tags">
+<span class="badge confirmed">🕒 Đã xác nhận</span>
+<span class="level-medium">TRUNG BÌNH</span>
+</div>
+<div class="alert-title">Chuyển động bất thường</div>
+<div class="alert-desc">Phát hiện chuyển động bất thường tại khu vực ngoài giờ làm việc</div>
+<div class="time">Tạo lúc: 10:46:06 26/3/2026</div>
+<div class="time">Xác nhận lúc: 10:47:06 26/3/2026</div>
+</div>
+
+<div class="alert-actions">
+<button class="action-btn video-btn">▶ Xem video</button>
+<button class="action-btn resolve-btn">Giải quyết</button>
+<div class="note">Đánh dấu đã xử lý</div>
+</div>
+</div>
+
+</div>
+
+<script>
+// mở video
+document.querySelectorAll(".video-btn").forEach(btn=>{
+btn.onclick = ()=>{
+document.getElementById("videoModal").style.display="flex";
+};
+});
+
+// đóng video
+function closeVideo(){
+document.getElementById("videoModal").style.display="none";
+}
+
+// xác nhận
+document.querySelectorAll(".confirm-btn").forEach(btn=>{
+btn.onclick = ()=> alert("Đã xác nhận");
+});
+
+// giải quyết
+document.querySelectorAll(".resolve-btn").forEach(btn=>{
+btn.onclick = ()=> alert("Đã giải quyết");
+});
+</script>
+
+</body>
+</html>

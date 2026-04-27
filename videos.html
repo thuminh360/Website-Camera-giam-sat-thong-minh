@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Quản lý lịch sử video</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial;
+}
+
+body{
+display:flex;
+height:100vh;
+background:#334155;
+}
+
+/* SIDEBAR */
+.sidebar{
+width:250px;
+background:#1e293b;
+color:#fff;
+padding:20px;
+display:flex;
+flex-direction:column;
+justify-content:space-between;
+}
+
+.logo{
+font-weight:bold;
+margin-bottom:20px;
+}
+
+.menu h4{
+margin:15px 0 10px;
+font-size:12px;
+color:#94a3b8;
+}
+
+.menu a{
+display:block;
+padding:10px;
+border-radius:8px;
+color:#cbd5f5;
+text-decoration:none;
+margin-bottom:5px;
+}
+
+.menu a:hover{
+background:#334155;
+}
+
+.menu a.active{
+background:#10b981;
+color:#fff;
+}
+
+.user{
+font-size:14px;
+}
+
+/* MAIN */
+.main{
+flex:1;
+padding:28px 30px;
+}
+
+.header{
+display:flex;
+justify-content:space-between;
+align-items:flex-start;
+margin-bottom:35px;
+}
+
+.page-title{
+font-size:30px;
+font-weight:bold;
+color:#fff;
+margin-bottom:8px;
+}
+
+.subtitle{
+font-size:16px;
+color:#cbd5f5;
+}
+
+.search-box{
+margin-top:18px;
+}
+
+.search-box input{
+width:650px;
+padding:16px 18px;
+border:none;
+border-radius:10px;
+font-size:16px;
+outline:none;
+}
+
+/* TABLE */
+.table-wrap{
+background:#eef1f4;
+border-radius:18px;
+overflow:hidden;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+color:#475569;
+}
+
+th{
+background:#e2e8f0;
+padding:18px;
+text-align:left;
+font-size:15px;
+}
+
+td{
+padding:24px 18px;
+border-top:1px solid #d1d5db;
+font-size:15px;
+}
+
+.action{
+display:flex;
+gap:30px;
+}
+
+.view-btn{
+cursor:pointer;
+color:#475569;
+text-decoration:none;
+}
+
+.delete-btn{
+cursor:pointer;
+color:red;
+text-decoration:none;
+}
+
+/* MODAL VIDEO */
+.overlay{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.5);
+display:none;
+justify-content:center;
+align-items:center;
+}
+
+.modal{
+width:800px;
+background:#f1f5f9;
+border-radius:16px;
+padding:20px;
+}
+
+.video-box{
+background:#0f172a;
+height:300px;
+border-radius:12px;
+display:flex;
+justify-content:center;
+align-items:center;
+color:#94a3b8;
+}
+
+.close{
+float:right;
+cursor:pointer;
+font-size:20px;
+}
+
+.btn-close{
+margin-top:20px;
+width:100%;
+padding:12px;
+background:#334155;
+color:#fff;
+border:none;
+border-radius:10px;
+cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<!-- MODAL -->
+<div id="videoModal" class="overlay">
+<div class="modal">
+<div class="close" onclick="closeVideo()">✕</div>
+<h3>Xem video</h3>
+
+<div class="video-box">
+▶ Video minh họa
+</div>
+
+<button class="btn-close" onclick="closeVideo()">Đóng</button>
+</div>
+</div>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+<div>
+<div class="logo">📷 BAE Smart Camera</div>
+
+<div class="menu">
+<h4>QUẢN TRỊ</h4>
+<a href="users.html">Quản lý tài khoản</a>
+<a href="camera.html">Quản lý camera</a>
+<a href="report.html">Báo cáo và thống kê</a>
+
+<h4>GIÁM SÁT</h4>
+<a href="live.html">Giám sát trực tiếp</a>
+<a href="events.html">Đánh giá sự kiện</a>
+<a href="alerts.html">Quản lý cảnh báo</a>
+<a href="videos.html" class="active">Quản lý lịch sử video</a>
+</div>
+</div>
+
+<div class="user">
+👤 Admin User<br>
+<small>Quản trị viên</small>
+</div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+<div class="header">
+<div>
+<div class="page-title">
+Quản lý lịch sử video
+</div>
+<div class="subtitle">
+Tìm kiếm và xem chi tiết video đã ghi
+</div>
+</div>
+
+<div class="search-box">
+<input id="searchInput" type="text" placeholder="🔍 Tìm kiếm camera (ví dụ: Camera 1)...">
+</div>
+</div>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Camera</th>
+<th>Cổng</th>
+<th>Tên file</th>
+<th>Dung lượng</th>
+<th>Thời gian ghi</th>
+<th>Thao tác</th>
+</tr>
+</thead>
+
+<tbody id="videoTable">
+
+<tr>
+<td>VID001</td>
+<td>Camera 1</td>
+<td>1</td>
+<td>camera1_20260324_103000.mp4</td>
+<td>500 MB</td>
+<td>2026-03-24 10:30:00</td>
+<td>
+<div class="action">
+<a class="view-btn">▶ Xem</a>
+<a class="delete-btn">🗑 Xóa</a>
+</div>
+</td>
+</tr>
+
+<tr>
+<td>VID002</td>
+<td>Camera 1</td>
+<td>1</td>
+<td>camera1_20260324_110000.mp4</td>
+<td>750 MB</td>
+<td>2026-03-24 11:00:00</td>
+<td>
+<div class="action">
+<a class="view-btn">▶ Xem</a>
+<a class="delete-btn">🗑 Xóa</a>
+</div>
+</td>
+</tr>
+
+<tr>
+<td>VID003</td>
+<td>Camera 2</td>
+<td>2</td>
+<td>camera2_20260324_121500.mp4</td>
+<td>1000 MB</td>
+<td>2026-03-24 12:15:00</td>
+<td>
+<div class="action">
+<a class="view-btn">▶ Xem</a>
+<a class="delete-btn">🗑 Xóa</a>
+</div>
+</td>
+</tr>
+
+<tr>
+<td>VID004</td>
+<td>Camera 3</td>
+<td>3</td>
+<td>camera3_20260324_130000.mp4</td>
+<td>600 MB</td>
+<td>2026-03-24 13:00:00</td>
+<td>
+<div class="action">
+<a class="view-btn">▶ Xem</a>
+<a class="delete-btn">🗑 Xóa</a>
+</div>
+</td>
+</tr>
+
+<tr>
+<td>VID005</td>
+<td>Camera 1</td>
+<td>1</td>
+<td>camera1_20260324_140000.mp4</td>
+<td>800 MB</td>
+<td>2026-03-24 14:00:00</td>
+<td>
+<div class="action">
+<a class="view-btn">▶ Xem</a>
+<a class="delete-btn">🗑 Xóa</a>
+</div>
+</td>
+</tr>
+
+</tbody>
+</table>
+</div>
+
+</div>
+
+<script>
+
+// XEM VIDEO
+document.addEventListener("click", function(e){
+if(e.target.classList.contains("view-btn")){
+document.getElementById("videoModal").style.display="flex";
+}
+});
+
+// ĐÓNG VIDEO
+function closeVideo(){
+document.getElementById("videoModal").style.display="none";
+}
+
+// XÓA VIDEO
+document.addEventListener("click", function(e){
+if(e.target.classList.contains("delete-btn")){
+if(confirm("Bạn có chắc muốn xóa?")){
+e.target.closest("tr").remove();
+}
+}
+});
+
+// TÌM KIẾM CAMERA
+document.getElementById("searchInput").addEventListener("keyup", function(){
+let keyword = this.value.toLowerCase();
+let rows = document.querySelectorAll("#videoTable tr");
+
+rows.forEach(row=>{
+let cam = row.children[1].innerText.toLowerCase();
+
+if(cam.includes(keyword)){
+row.style.display="";
+}else{
+row.style.display="none";
+}
+});
+});
+
+</script>
+
+</body>
+</html>

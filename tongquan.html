@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Tổng quan</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial;
+}
+
+body{
+display:flex;
+height:100vh;
+background:#334155;
+color:#fff;
+}
+
+.sidebar{
+width:250px;
+background:#1e293b;
+padding:20px;
+display:flex;
+flex-direction:column;
+justify-content:space-between;
+}
+
+.logo{
+font-size:18px;
+font-weight:bold;
+margin-bottom:20px;
+}
+
+.menu h4{
+margin:15px 0 10px;
+font-size:12px;
+color:#94a3b8;
+}
+
+.menu a{
+display:block;
+padding:10px;
+border-radius:8px;
+text-decoration:none;
+color:#cbd5f5;
+margin-bottom:5px;
+}
+
+.menu a:hover{
+background:#334155;
+}
+
+.user{
+font-size:14px;
+}
+
+.main{
+flex:1;
+padding:25px;
+}
+
+.header h1{
+font-size:28px;
+margin-bottom:8px;
+}
+
+.header p{
+color:#cbd5f5;
+margin-bottom:20px;
+}
+
+.cards{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:15px;
+margin-bottom:20px;
+}
+
+.card{
+background:#e5e7eb;
+color:#1f2937;
+padding:20px;
+border-radius:12px;
+}
+
+.card h4{
+margin-bottom:10px;
+}
+
+.value{
+font-size:30px;
+font-weight:bold;
+}
+
+.content{
+display:grid;
+grid-template-columns:2fr 1fr;
+gap:20px;
+}
+
+.box{
+background:#e5e7eb;
+color:#1f2937;
+padding:20px;
+border-radius:12px;
+}
+
+.status{
+margin-top:15px;
+}
+
+.status div{
+background:#cbd5e1;
+padding:12px;
+border-radius:8px;
+margin-bottom:10px;
+display:flex;
+justify-content:space-between;
+}
+
+.green{color:green;font-weight:bold}
+.red{color:red;font-weight:bold}
+.orange{color:orange;font-weight:bold}
+
+canvas{
+max-width:300px;
+margin:auto;
+display:block;
+}
+
+/*Logout */
+.user-box{
+position:relative;
+cursor:pointer;
+}
+
+.user{
+font-size:14px;
+color:#cbd5f5;
+padding:10px;
+border-radius:8px;
+}
+
+.user:hover{
+background:#334155;
+}
+
+.logout-menu{
+display:none;
+position:absolute;
+bottom:60px;
+left:0;
+background:white;
+width:140px;
+border-radius:10px;
+overflow:hidden;
+box-shadow:0 4px 15px rgba(0,0,0,.2);
+}
+
+.logout-menu a{
+display:block;
+padding:12px;
+text-decoration:none;
+color:#dc2626;
+font-weight:bold;
+background:white;
+}
+
+.logout-menu a:hover{
+background:#f1f5f9;
+}
+
+</style>
+</head>
+<script>
+function toggleMenu(){
+let menu=document.getElementById("logoutMenu");
+
+if(menu.style.display==="block"){
+menu.style.display="none";
+}else{
+menu.style.display="block";
+}
+}
+
+function logout(e){
+e.stopPropagation();
+window.location.href="login.html";
+}
+
+document.addEventListener("click",function(e){
+let box=document.querySelector(".user-box");
+
+if(!box.contains(e.target)){
+document.getElementById("logoutMenu").style.display="none";
+}
+});
+</script>
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div>
+    <div class="logo">📷 BAE Smart Camera</div>
+
+    <div class="menu">
+      <h4>QUẢN TRỊ</h4>
+      <a href="users.html">Quản lý tài khoản</a>
+      <a href="camera.html">Quản lý camera</a>
+      <a href="report.html">Báo cáo và thống kê</a>
+
+      <h4>GIÁM SÁT</h4>
+      <a href="live.html">Giám sát trực tiếp</a>
+      <a href="events.html">Đánh giá sự kiện</a>
+      <a href="alerts.html">Quản lý cảnh báo</a>
+      <a href="videos.html" class="active">Quản lý lịch sử video</a>
+    </div>
+  </div>
+
+  <div class="user-box" onclick="toggleMenu()">
+    <div class="user">
+        👤 Admin User<br>
+        <small>Quản trị viên</small>
+    </div>
+
+    <div id="logoutMenu" class="logout-menu">
+        <a href="#" onclick="logout(event)">Đăng xuất</a>
+    </div>
+</div>
+</div>
+
+
+<div class="main">
+
+<div class="header">
+<h1>Tổng quan</h1>
+<p>Chào mừng trở lại Admin User!</p>
+</div>
+
+
+<div class="cards">
+
+<div class="card">
+<h4>Tổng số Camera</h4>
+<div class="value">7</div>
+</div>
+
+<div class="card">
+<h4>Camera hoạt động</h4>
+<div class="value">5</div>
+</div>
+
+<div class="card">
+<h4>Cảnh báo</h4>
+<div class="value">2</div>
+</div>
+
+<div class="card">
+<h4>Tổng sự kiện</h4>
+<div class="value">2</div>
+</div>
+
+</div>
+
+
+<div class="content">
+
+<div class="box">
+<h3>Trạng thái Camera</h3>
+<canvas id="chart"></canvas>
+</div>
+
+<div class="box">
+
+<h3>Tổng quan hệ thống</h3>
+
+<div class="status">
+<div>
+<span>Tổng Camera</span>
+<span>7</span>
+</div>
+
+<div>
+<span>Hoạt động</span>
+<span class="green">5</span>
+</div>
+
+<div>
+<span>Ngoại tuyến</span>
+<span class="red">2</span>
+</div>
+
+<div>
+<span>Cảnh báo</span>
+<span class="orange">2</span>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+new Chart(
+document.getElementById('chart'),
+{
+type:'pie',
+data:{
+labels:[
+'Hoạt động',
+'Offline'
+],
+datasets:[
+{
+data:[5,2],
+backgroundColor:[
+'green',
+'red'
+]
+}
+]
+}
+}
+);
+</script>
+
+</body>
+</html>

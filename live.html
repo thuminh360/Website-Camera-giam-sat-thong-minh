@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Giám sát trực tiếp</title>
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial;
+}
+
+body{
+display:flex;
+height:100vh;
+background:#334155;
+}
+
+.sidebar{
+width:250px;
+background:#1e293b;
+color:#fff;
+padding:20px;
+display:flex;
+flex-direction:column;
+justify-content:space-between;
+}
+
+.logo{
+font-weight:bold;
+margin-bottom:20px;
+}
+
+.menu h4{
+margin:15px 0 10px;
+font-size:12px;
+color:#94a3b8;
+}
+
+.menu a{
+display:block;
+padding:10px;
+border-radius:8px;
+color:#cbd5f5;
+text-decoration:none;
+margin-bottom:5px;
+}
+
+.menu a.active{
+background:#10b981;
+color:#fff;
+}
+
+.menu a:hover{
+background:#334155;
+}
+
+.user{
+font-size:14px;
+}
+
+.main{
+flex:1;
+padding:20px;
+color:#fff;
+}
+
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:20px;
+}
+
+.header h1{
+font-size:26px;
+}
+
+.header p{
+color:#cbd5f5;
+margin-top:5px;
+}
+
+select{
+padding:8px 12px;
+border-radius:8px;
+border:none;
+}
+
+/* cards */
+.cards{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:15px;
+margin-bottom:20px;
+}
+
+.card{
+background:#e5e7eb;
+color:#111827;
+padding:20px;
+border-radius:12px;
+}
+
+.value{
+font-size:24px;
+font-weight:bold;
+}
+
+.green{color:green;}
+.orange{color:orange;}
+.red{color:red;}
+
+
+/* GRID mặc định 2x2 */
+.grid{
+display:grid;
+gap:15px;
+}
+
+/* layout động */
+.layout1{
+grid-template-columns:1fr;
+}
+
+.layout4{
+grid-template-columns:repeat(2,1fr);
+}
+
+.layout9{
+grid-template-columns:repeat(3,1fr);
+}
+
+.cam-card{
+background:#e5e7eb;
+border-radius:12px;
+padding:15px;
+color:#111827;
+}
+
+.cam-header{
+display:flex;
+justify-content:space-between;
+margin-bottom:10px;
+}
+
+.cam-video{
+height:220px;
+background:#2c3e50;
+border-radius:8px;
+display:flex;
+justify-content:center;
+align-items:center;
+color:#cbd5f5;
+position:relative;
+}
+
+.live{
+position:absolute;
+top:10px;
+left:10px;
+background:red;
+color:white;
+padding:4px 8px;
+font-size:12px;
+border-radius:4px;
+}
+
+.empty{
+background:#f1f5f9;
+color:#94a3b8;
+}
+
+@media(max-width:900px){
+.cards{
+grid-template-columns:1fr;
+}
+
+.grid{
+grid-template-columns:1fr !important;
+}
+}
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <div>
+    <div class="logo">📷 BAE Smart Camera</div>
+
+    <div class="menu">
+      <h4>QUẢN TRỊ</h4>
+      <a href="users.html">Quản lý tài khoản</a>
+      <a href="camera.html">Quản lý camera</a>
+      <a href="report.html">Báo cáo và thống kê</a>
+
+      <h4>GIÁM SÁT</h4>
+      <a href="live.html" class="active">Giám sát trực tiếp</a>
+      <a href="events.html">Đánh giá sự kiện</a>
+      <a href="alerts.html">Quản lý cảnh báo</a>
+      <a href="videos.html">Quản lý lịch sử video</a>
+    </div>
+  </div>
+
+  <div class="user">
+    👤 Admin User<br>
+    <small>Quản trị viên</small>
+  </div>
+</div>
+
+<div class="main">
+
+<div class="header">
+<div>
+<h1>Giám sát trực tiếp</h1>
+<p>Xem hình ảnh từ các camera trong thời gian thực</p>
+</div>
+
+<div>
+<select onchange="changeLayout(this.value)">
+<option value="1">1 camera</option>
+<option value="4" selected>2x2</option>
+<option value="9">3x3</option>
+</select>
+</div>
+</div>
+
+
+<div class="cards">
+<div class="card">
+<div class="value green">2</div>
+<div>Online</div>
+</div>
+
+<div class="card">
+<div class="value orange">0</div>
+<div>Offline</div>
+</div>
+
+<div class="card">
+<div class="value red">0</div>
+<div>Vô hiệu hóa</div>
+</div>
+</div>
+
+
+<!-- GRID CAMERA -->
+<div id="cameraGrid" class="grid layout4">
+</div>
+
+</div>
+
+
+
+<script>
+
+function changeLayout(type){
+
+let grid=document.getElementById("cameraGrid");
+
+grid.className="grid";
+
+if(type=="1"){
+grid.classList.add("layout1");
+renderCameras(1);
+}
+
+if(type=="4"){
+grid.classList.add("layout4");
+renderCameras(4);
+}
+
+if(type=="9"){
+grid.classList.add("layout9");
+renderCameras(9);
+}
+
+}
+
+function renderCameras(total){
+
+let html='';
+
+for(let i=1;i<=total;i++){
+
+let label=(i==2) ? "Camera A5" : "Camera "+i;
+
+html+=`
+<div class="cam-card">
+
+<div class="cam-header">
+<div>${label}</div>
+<div class="green">● Online</div>
+</div>
+
+<div class="cam-video">
+<div class="live">LIVE</div>
+${label}
+</div>
+
+</div>
+`;
+
+}
+
+document.getElementById("cameraGrid").innerHTML=html;
+
+}
+
+/* mặc định 2x2 */
+renderCameras(4);
+
+</script>
+
+</body>
+</html>

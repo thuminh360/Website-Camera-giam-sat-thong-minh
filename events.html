@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Đánh giá sự kiện bất thường</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial;
+}
+
+body{
+display:flex;
+height:100vh;
+background:#334155;
+}
+
+/* SIDEBAR */
+.sidebar{
+width:250px;
+background:#1e293b;
+color:#fff;
+padding:20px;
+display:flex;
+flex-direction:column;
+justify-content:space-between;
+}
+
+.logo{
+font-weight:bold;
+margin-bottom:20px;
+}
+
+.menu h4{
+margin:15px 0 10px;
+font-size:12px;
+color:#94a3b8;
+}
+
+.menu a{
+display:block;
+padding:10px;
+border-radius:8px;
+color:#cbd5f5;
+text-decoration:none;
+margin-bottom:5px;
+}
+
+.menu a:hover{
+background:#334155;
+}
+
+.menu a.active{
+background:#10b981;
+color:#fff;
+}
+
+.user{
+font-size:14px;
+}
+
+/* MAIN */
+.main{
+flex:1;
+padding:20px;
+}
+
+.page-title{
+font-size:26px;
+color:#fff;
+margin-bottom:6px;
+}
+
+.subtitle{
+color:#cbd5f5;
+margin-bottom:20px;
+font-size:15px;
+}
+
+/* TABLE */
+.table-box{
+background:#e5e7eb;
+border-radius:14px;
+overflow:hidden;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+color:#111827;
+}
+
+th{
+background:#dfe3e8;
+padding:16px;
+text-align:left;
+}
+
+td{
+padding:16px;
+border-top:1px solid #d1d5db;
+}
+
+/* BADGE */
+.badge{
+padding:7px 12px;
+border-radius:16px;
+font-size:13px;
+font-weight:bold;
+display:inline-block;
+}
+
+.red-badge{
+background:#ffdede;
+color:#dc2626;
+}
+
+.green-badge{
+background:#d8f5e5;
+color:#059669;
+}
+
+/* SELECT */
+.level{
+border:none;
+padding:8px 12px;
+border-radius:8px;
+font-weight:bold;
+font-size:13px;
+}
+
+.high{background:#ffdede;color:#dc2626;}
+.medium{background:#fff2c9;color:#d97706;}
+.low{background:#d8f5e5;color:#047857;}
+
+/* STATUS */
+.status{
+padding:7px 12px;
+border-radius:16px;
+font-size:13px;
+font-weight:bold;
+display:inline-block;
+}
+
+.done{background:#d8f5e5;color:#047857;}
+.pending{background:#fff2c9;color:#dc2626;}
+
+/* INPUT */
+.note{
+width:210px;
+padding:8px 10px;
+border-radius:8px;
+border:1px solid #cbd5e1;
+}
+
+/* VIDEO */
+.video-link{
+cursor:pointer;
+color:#64748b;
+text-decoration:none;
+}
+.video-link:hover{text-decoration:underline;}
+
+/* ===== MODAL ===== */
+.overlay{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.4);
+display:none;
+justify-content:center;
+align-items:center;
+}
+
+.modal{
+width:900px;
+background:#f1f5f9;
+border-radius:18px;
+padding:20px;
+}
+
+.modal-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.modal-title{
+font-size:22px;
+font-weight:bold;
+color:#111827;
+}
+
+.modal-sub{
+color:#64748b;
+margin-top:5px;
+}
+
+.close{
+font-size:22px;
+cursor:pointer;
+}
+
+.video-box{
+margin-top:20px;
+background:#0f172a;
+border-radius:16px;
+height:300px;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+color:#94a3b8;
+}
+
+.play{
+font-size:60px;
+}
+
+.video-id{
+font-size:20px;
+margin-top:10px;
+}
+
+.modal-footer{
+display:flex;
+gap:15px;
+margin-top:20px;
+}
+
+.btn{
+flex:1;
+padding:14px;
+border-radius:12px;
+border:none;
+cursor:pointer;
+}
+
+.btn-download{background:#e2e8f0;}
+.btn-close{background:#334155;color:#fff;}
+</style>
+</head>
+
+<body>
+
+<!-- ===== MODAL VIDEO ===== -->
+<div id="videoModal" class="overlay">
+<div class="modal">
+
+<div class="modal-header">
+<div>
+<div class="modal-title">Xem video</div>
+<div class="modal-sub" id="videoInfo"></div>
+</div>
+<div class="close" onclick="closeVideo()">✕</div>
+</div>
+
+<hr>
+
+<div class="video-box">
+<div class="play">▶</div>
+<div class="video-id" id="videoId"></div>
+<div>Video player minh họa</div>
+</div>
+
+<div class="modal-footer">
+<button class="btn btn-download">Tải xuống</button>
+<button class="btn btn-close" onclick="closeVideo()">Đóng</button>
+</div>
+
+</div>
+</div>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+<div>
+<div class="logo">📷 BAE Smart Camera</div>
+
+<div class="menu">
+<h4>QUẢN TRỊ</h4>
+<a href="users.html">Quản lý tài khoản</a>
+<a href="camera.html">Quản lý camera</a>
+<a href="report.html">Báo cáo và thống kê</a>
+
+<h4>GIÁM SÁT</h4>
+<a href="live.html">Giám sát trực tiếp</a>
+<a href="#" class="active">Đánh giá sự kiện</a>
+<a href="alerts.html">Quản lý cảnh báo</a>
+<a href="videos.html">Quản lý lịch sử video</a>
+</div>
+</div>
+
+<div class="user">
+👤 Admin User<br>
+<small>Quản trị viên</small>
+</div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+<div class="page-title">Đánh giá sự kiện bất thường</div>
+<div class="subtitle">Đánh giá mức độ và xác định sự kiện bất thường từ các camera</div>
+
+<div class="table-box">
+<table>
+
+<thead>
+<tr>
+<th>ID</th>
+<th>Thời gian</th>
+<th>Camera</th>
+<th>Sự kiện</th>
+<th>Video</th>
+<th>Đánh giá</th>
+<th>Mức độ</th>
+<th>Trạng thái</th>
+<th>Ghi chú</th>
+</tr>
+</thead>
+
+<tbody>
+
+<tr>
+<td>001</td>
+<td>10:49</td>
+<td>Camera 1</td>
+<td>Xâm nhập</td>
+<td><a class="video-link" onclick="openVideo('001','Camera 1 - 10:49')">▶ Video</a></td>
+<td><span class="badge red-badge">● Bất thường</span></td>
+<td><select class="level high"><option>Cao</option><option>Trung bình</option><option>Thấp</option></select></td>
+<td><span class="status done">✓ Đã đánh giá</span></td>
+<td><input class="note" value="Người lạ vào khu vực"></td>
+</tr>
+
+<tr>
+<td>002</td>
+<td>10:48</td>
+<td>Camera 2</td>
+<td>Té ngã</td>
+<td><a class="video-link" onclick="openVideo('002','Camera 2 - 10:48')">▶ Video</a></td>
+<td><span class="badge red-badge">● Bất thường</span></td>
+<td><select class="level medium"><option>Trung bình</option><option>Cao</option><option>Thấp</option></select></td>
+<td><span class="status pending">⌛ Chưa đánh giá</span></td>
+<td><input class="note" placeholder="Ghi chú..."></td>
+</tr>
+
+<tr>
+<td>003</td>
+<td>10:47</td>
+<td>Camera 3</td>
+<td>Chuyển động</td>
+<td><a class="video-link" onclick="openVideo('003','Camera 3 - 10:47')">▶ Video</a></td>
+<td><span class="badge green-badge">● Bình thường</span></td>
+<td><select class="level low"><option>Thấp</option><option>Trung bình</option><option>Cao</option></select></td>
+<td><span class="status done">✓ Đã đánh giá</span></td>
+<td><input class="note" placeholder="Ghi chú..."></td>
+</tr>
+
+</tbody>
+</table>
+</div>
+
+</div>
+
+<script>
+function openVideo(id, info){
+document.getElementById("videoModal").style.display="flex";
+document.getElementById("videoId").innerText="Video ID: "+id;
+document.getElementById("videoInfo").innerText=info;
+}
+
+function closeVideo(){
+document.getElementById("videoModal").style.display="none";
+}
+
+window.onclick=function(e){
+let modal=document.getElementById("videoModal");
+if(e.target===modal){
+modal.style.display="none";
+}
+}
+</script>
+
+</body>
+</html>
